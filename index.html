@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            box-sizing: border-box;
+        }
+
+        .box input {
+            width: 250px;
+            height: 30px;
+        }
+
+        .TabBox {
+            width: 450px;
+            height: 180px;
+            border: 1px solid orange;
+            display: none;
+        }
+
+        .TabBox>div {
+            display: none;
+            display: inline-block;
+            width: 32.6%;
+            height: 100%;
+            overflow: auto;
+
+        }
+
+        .TabBox>div li {
+            display: block;
+            width: 100%;
+            height: 30px;
+            border-bottom: 1px solid #cccccc;
+        }
+
+        .TabBox>div li:hover {
+            background-color: #cccccc;
+        }
+
+        .TabBox>div li span {
+            float: right;
+            margin-right: 10px;
+            line-height: 30px;
+            font-size: 18px;
+        }
+
+        .TabBox>div li i {
+            float: left;
+            font-style: normal;
+            margin-left: 15px;
+            line-height: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <input type="text" id="shuru">
+        <div class="TabBox">
+            <div class="one">
+                <ul></ul>
+            </div>
+            <div class="two">
+                <ul></ul>
+            </div>
+            <div class="three">
+                <ul></ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    var shuju = NaN
+    var cityShuJu=NaN
+    var aaa=NaN
+    var bbb=NaN
+    $.getJSON("./sanji.json", function (data) {
+        shuju = data
+        $.each(data, function (index, value) {
+            var oneLi = document.createElement('li')
+            var twoLi = document.createElement('i')
+            var threeLi = document.createElement('span')
+            $(twoLi).text(value.value)
+            $(threeLi).text('>')
+            oneLi.appendChild(twoLi)
+            oneLi.appendChild(threeLi)
+            $(oneLi).attr('data-index', index)
+            $('.one ul').append(oneLi)
+            $('.one').fadeIn()
+        });
+    });
+    $('.one').on('mouseenter', 'li', function () {
+        // var that=this
+        var dataIndex = $(this).attr('data-index')
+        cityShuJu = shuju[dataIndex]['child']
+        aaa=shuju[dataIndex]
+        $('.two ul').html('')
+        $.each(cityShuJu, function (index, value) {
+            var oneLi = document.createElement('li')
+            var twoLi = document.createElement('i')
+            var threeLi = document.createElement('span')
+            $(twoLi).text(value.value)
+            $(threeLi).text('>')
+            oneLi.appendChild(twoLi)
+            oneLi.appendChild(threeLi)
+            $(oneLi).attr('data-index', index)
+            $('.two ul').append(oneLi)
+            $('.two').fadeIn()
+            $('.three').fadeOut()
+        })
+    })
+    $('.two').on('mouseenter', 'li', function () {
+        var dataIndexaa = $(this).attr('data-index')
+        let passShuJu = cityShuJu[dataIndexaa]['child']
+        bbb=cityShuJu[dataIndexaa]
+        $('#shuru').val('/'+aaa.value+'/'+bbb.value)
+        $('.three ul').html('')
+        $.each(passShuJu, function (index, value) {
+            var oneLi = document.createElement('li')
+            var twoLi = document.createElement('i')
+            // var threeLi = document.createElement('span')
+            $(twoLi).text(value.value)
+            // $(threeLi).text('>')
+            oneLi.appendChild(twoLi)
+            // oneLi.appendChild(threeLi)
+            $(oneLi).attr('data-index', index)
+            $('.three ul').append(oneLi)
+            $('.three').fadeIn()
+        })
+    })
+    $('.three').on('click','li',function(){
+        var ccc=$(this).children('i').text()
+        $('#shuru').val('/'+aaa.value+'/'+bbb.value+'/'+ccc)
+    })
+    $('.two').on('mouseenter',function(){
+        $('#shuru').val('/'+aaa.value)
+    })
+    $('#shuru').focus(function () {
+        $('.TabBox').fadeIn();
+    });
+    $('#shuru').blur(function(){
+        $('.TabBox').fadeOut();
+    })
+</script>
+
+</html>
